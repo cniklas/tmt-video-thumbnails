@@ -2,3 +2,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--scrollbar-thumb-color: hsl(218, 13%, 64%);
+	--scrollbar-track-color: hsla(218, 76%, 15%, 0.08);
+	--text-box-top: 360px;
+	--image-width: 1920px;
+	--image-height: 1080px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb-color); }
+::-webkit-scrollbar-track { background-color: var(--scrollbar-track-color); }
+
+html {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+@media (min-width: 1920px) {
+	body {
+		overflow-x: hidden;
+	}
+}
+
+#canvas {
+	/* font-family: 'Poppins', sans-serif; */
+	/* 10px als font-base */
+	/* font-size: .625rem; */
+	/* line-height: 1; */
+}
+
+.image-dimensions {
+	width: var(--image-width);
+	height: var(--image-height);
+}

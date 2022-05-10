@@ -1,6 +1,7 @@
 <script>
 	// import logo from './assets/svelte.png'
 	// import Counter from './lib/Counter.svelte'
+	import mockup from './assets/mockup.svg'
 
 	let dialog
 	const showModal = () => {
@@ -16,7 +17,7 @@
 		{ key: 'es-ES', name: 'spanisch', checked: false },
 		{ key: 'fr-FR', name: 'französisch', checked: false },
 		{ key: 'ru-RU', name: 'russisch', checked: false },
-		{ key: 'pl-PL', name: 'polnisch', checked: false },
+		// { key: 'pl-PL', name: 'polnisch', checked: false },
 	]
 
 	const formatDate = (date = null, key = 'de-DE') => {
@@ -44,16 +45,12 @@
 	}
 </script>
 
-<main class="mx-auto p-4 text-center">
-	<!-- <img src={logo} alt="Svelte Logo" class="h-64 w-64" /> -->
-	<h1
-		class="my-8 mx-auto w-fit max-w-[14rem] border-[3px] border-[#ff3e00] py-4 px-8 text-[4rem] font-thin uppercase leading-[1.1] text-[#ff3e00]"
-	>
-		{localeDate}
-	</h1>
+<main>
+	<button type="button" class="h-12 rounded-3xl border-2 border-blue-600 px-4" on:click={showModal}>open modal</button>
+	<hr class="my-4" />
 
-	<pre class="my-4 whitespace-pre-line">{JSON.stringify(dateTextArray)}</pre>
-	<form class="accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
+	<!-- <pre class="my-4 whitespace-pre-line">{JSON.stringify(dateTextArray)}</pre> -->
+	<form class="my-4 accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
 		<div class="my-4">
 			<input type="date" bind:value={dateInput} />
 		</div>
@@ -72,9 +69,15 @@
 		</div>
 	</form>
 
-	<hr class="my-4" />
+	<section id="canvas" class="image-dimensions relative mx-auto flex flex-col items-center">
+		<img src={mockup} alt="Mockup" />
+		<h1
+			class="absolute top-[var(--text-box-top)] border-4 border-current py-4 px-8 text-[4rem] font-thin uppercase leading-[1.1] text-white"
+		>
+			{localeDate}
+		</h1>
+	</section>
 
-	<button type="button" class="h-12 rounded-3xl border-2 border-blue-600 px-4" on:click={showModal}>open modal</button>
 	<dialog bind:this={dialog}>
 		<header>
 			<button type="button" on:click={closeModal}>x</button>
@@ -95,48 +98,6 @@
 </main>
 
 <style>
-	/* :root {
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
-			'Helvetica Neue', sans-serif;
-	} */
-
-	/* main {
-		text-align: center;
-		padding: 1em;
-		margin: 0 auto;
-	} */
-
-	/* img {
-		height: 16rem;
-		width: 16rem;
-	} */
-
-	/* h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4rem;
-		font-weight: 100;
-		line-height: 1.1;
-		margin: 2rem auto;
-		max-width: 14rem;
-	} */
-
-	/* p {
-		max-width: 14rem;
-		margin: 1rem auto;
-		line-height: 1.35;
-	} */
-
-	@media (min-width: 480px) {
-		h1 {
-			max-width: none;
-		}
-
-		p {
-			max-width: none;
-		}
-	}
-
 	dialog::backdrop {
 		--s: 222px; /* control the size */
 		--_g: #7f727b 10%, #d6b4c2 10.5% 19%, #0000 19.5% 80.5%, #d6b4c2 81% 89.5%, #baa0ab 90%;
