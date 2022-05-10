@@ -1,7 +1,6 @@
 <script>
-	// import logo from './assets/svelte.png'
-	// import Counter from './lib/Counter.svelte'
-	import mockup from './assets/mockup.svg'
+	import html2canvas from 'html2canvas'
+	import Canvas from './lib/Canvas.svelte'
 
 	let dialog
 	const showModal = () => {
@@ -10,15 +9,6 @@
 	const closeModal = () => {
 		dialog.close()
 	}
-
-	const languages = [
-		{ key: 'de-DE', name: 'deutsch', checked: false },
-		{ key: 'en-US', name: 'englisch', checked: false },
-		{ key: 'es-ES', name: 'spanisch', checked: false },
-		{ key: 'fr-FR', name: 'französisch', checked: false },
-		{ key: 'ru-RU', name: 'russisch', checked: false },
-		// { key: 'pl-PL', name: 'polnisch', checked: false },
-	]
 
 	const formatDate = (date = null, key = 'de-DE') => {
 		if (!date) return ''
@@ -31,17 +21,72 @@
 	}
 	let [dateInput] = new Date().toISOString().split('T')
 	let localeDate = formatDate(dateInput)
-	let dateTextArray = []
 
-	const onSubmit = () => {
-		dateTextArray = []
-		languages.forEach(item => {
-			if (item.checked) {
-				dateTextArray.push(formatDate(dateInput, item.key))
+	let imagesGenerated = false
+	let isPainting = false
+	let files = []
+	const languages = [
+		{ key: 'de-DE', name: 'deutsch', checked: true },
+		{ key: 'en-US', name: 'englisch', checked: false },
+		{ key: 'es-ES', name: 'spanisch', checked: false },
+		{ key: 'fr-FR', name: 'französisch', checked: false },
+		{ key: 'ru-RU', name: 'russisch', checked: false },
+		// { key: 'pl-PL', name: 'polnisch', checked: false },
+	]
+
+	const onSubmit = async () => {
+		resetPage()
+		const dateArray = []
+
+		// run process
+		for (const language of languages) {
+			if (language.checked) {
+				// dateArray.push(formatDate(dateInput, language.key))
+				// localeDate = dateArray.at(-1)
+				localeDate = formatDate(dateInput, language.key)
+				dateArray.push(localeDate)
+				await generateImage()
 			}
-		})
+		}
 
-		localeDate = dateTextArray.at(0) ?? formatDate(dateInput)
+		// ready to be saved
+		imagesGenerated = true
+		console.log(files)
+	}
+
+	const generateImage = async () => {
+		if (!isPainting) {
+			isPainting = true
+			window.scroll(0, 0)
+
+			await new Promise(resolve => {
+				requestAnimationFrame(async () => {
+					try {
+						const canvas = await html2canvas(document.querySelector('#canvas'), {
+							backgroundColor: null,
+							useCORS: false,
+							logging: true,
+						})
+						const image = canvas.toDataURL('image/png')
+						files.push(image)
+					} catch (error) {
+						console.error(error)
+					} finally {
+						isPainting = false
+						resolve()
+					}
+				})
+			})
+		}
+	}
+
+	const resetPage = () => {
+		imagesGenerated = false
+		isPainting = false
+		files = []
+
+		window.scroll(0, 0)
+		// navbar.focus()
 	}
 </script>
 
@@ -49,7 +94,6 @@
 	<button type="button" class="h-12 rounded-3xl border-2 border-blue-600 px-4" on:click={showModal}>open modal</button>
 	<hr class="my-4" />
 
-	<!-- <pre class="my-4 whitespace-pre-line">{JSON.stringify(dateTextArray)}</pre> -->
 	<form class="my-4 accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
 		<div class="my-4">
 			<input type="date" bind:value={dateInput} />
@@ -69,14 +113,7 @@
 		</div>
 	</form>
 
-	<section id="canvas" class="image-dimensions relative mx-auto flex flex-col items-center">
-		<img src={mockup} alt="Mockup" />
-		<h1
-			class="absolute top-[var(--text-box-top)] border-4 border-current py-4 px-8 text-[4rem] font-thin uppercase leading-[1.1] text-white"
-		>
-			{localeDate}
-		</h1>
-	</section>
+	<Canvas {localeDate} />
 
 	<dialog bind:this={dialog}>
 		<header>
@@ -86,15 +123,6 @@
 	</dialog>
 
 	<!-- <Counter /> -->
-
-	<!-- <p class="my-4 mx-auto max-w-[14rem] leading-[1.35]">
-		Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.
-	</p> -->
-
-	<!-- <p class="my-4 mx-auto max-w-[14rem] leading-[1.35]">
-		Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for the officially supported framework, also
-		powered by Vite!
-	</p> -->
 </main>
 
 <style>
