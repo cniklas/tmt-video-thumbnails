@@ -2,13 +2,10 @@
 	import html2canvas from 'html2canvas'
 	import Canvas from './lib/Canvas.svelte'
 
-	let dialog
-	const showModal = () => {
-		dialog.showModal()
-	}
-	const closeModal = () => {
-		dialog.close()
-	}
+	// templates
+	import mockup from './assets/mockup.svg'
+	const imageTemplates = [{ name: 'mockup', source: mockup }]
+	let selectedTemplate
 
 	const formatDate = (date = null, key = 'de-DE') => {
 		if (!date) return ''
@@ -22,10 +19,10 @@
 	let [dateInput] = new Date().toISOString().split('T')
 	let localeDate = formatDate(dateInput)
 
-	let imagesGenerated = false
+	let finished = false
 	let isPainting = false
-	let files = []
-	const languages = [
+	let images = []
+	let languages = [
 		{ key: 'de-DE', name: 'deutsch', checked: true },
 		{ key: 'en-US', name: 'englisch', checked: false },
 		{ key: 'es-ES', name: 'spanisch', checked: false },
@@ -34,27 +31,21 @@
 		// { key: 'pl-PL', name: 'polnisch', checked: false },
 	]
 
-	const onSubmit = async () => {
-		resetPage()
-		const dateArray = []
+	const resetPage = () => {
+		;[dateInput] = new Date().toISOString().split('T')
+		localeDate = formatDate(dateInput)
 
-		// run process
-		for (const language of languages) {
-			if (language.checked) {
-				// dateArray.push(formatDate(dateInput, language.key))
-				// localeDate = dateArray.at(-1)
-				localeDate = formatDate(dateInput, language.key)
-				dateArray.push(localeDate)
-				await generateImage()
-			}
-		}
+		finished = false
+		isPainting = false
+		images = []
+		languages.map(item => (item.checked = item.name === 'deutsch' ? true : false))
+		// https://svelte.dev/tutorial/updating-arrays-and-objects
+		languages = languages
 
-		// ready to be saved
-		imagesGenerated = true
-		console.log(files)
+		window.scroll(0, 0)
 	}
 
-	const generateImage = async () => {
+	const generateImage = async (fileName = 'download') => {
 		if (!isPainting) {
 			isPainting = true
 			window.scroll(0, 0)
@@ -68,7 +59,7 @@
 							logging: true,
 						})
 						const image = canvas.toDataURL('image/png')
-						files.push(image)
+						images.push({ name: `${fileName}.png`, image })
 					} catch (error) {
 						console.error(error)
 					} finally {
@@ -80,26 +71,54 @@
 		}
 	}
 
-	const resetPage = () => {
-		imagesGenerated = false
-		isPainting = false
-		files = []
+	const onSubmit = async () => {
+		// run process
+		for (const language of languages) {
+			if (language.checked) {
+				localeDate = formatDate(dateInput, language.key)
+				const fileName = `${dateInput} ${selectedTemplate.name} ${language.key.slice(0, 2)}`
+				await generateImage(fileName)
+			}
+		}
 
-		window.scroll(0, 0)
-		// navbar.focus()
+		finished = true
+		// https://svelte.dev/tutorial/updating-arrays-and-objects
+		images = images
+		if (images.length) showModal()
 	}
+
+	let dialog
+	const showModal = () => {
+		dialog.showModal()
+		// document.body.classList.add('freeze')
+	}
+	const closeModal = () => {
+		dialog.close()
+		resetPage()
+		// document.body.classList.remove('freeze')
+	}
+	// 🚩 TODO funktioniert browserübergreifend?
+	// 🚩 TODO <dialog> -Element-Tutorial weiterlesen
+	document.addEventListener('keydown', e => {
+		// if (e.code === 'Escape') document.body.classList.remove('freeze')
+		if (e.code === 'Escape' && dialog.getAttribute('open') !== null) resetPage()
+	})
 </script>
 
 <main>
-	<button type="button" class="h-12 rounded-3xl border-2 border-blue-600 px-4" on:click={showModal}>open modal</button>
-	<hr class="my-4" />
-
-	<form class="my-4 accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
-		<div class="my-4">
-			<input type="date" bind:value={dateInput} />
-		</div>
-		<div class="my-4">
-			<div class="inline-flex gap-2">
+	<section class="flex justify-center">
+		<form class="my-4 text-center accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
+			<div class="mb-4">
+				<select bind:value={selectedTemplate}>
+					{#each imageTemplates as item}
+						<option value={item}>{item.name}</option>
+					{/each}
+				</select>
+			</div>
+			<div class="mb-4">
+				<input type="date" bind:value={dateInput} on:change={() => (localeDate = formatDate(dateInput))} />
+			</div>
+			<div class="mb-4 flex gap-2">
 				{#each languages as item}
 					<label>
 						<input type="checkbox" bind:checked={item.checked} />
@@ -107,35 +126,29 @@
 					</label>
 				{/each}
 			</div>
-		</div>
-		<div class="my-4">
-			<button type="submit" class="h-12 rounded-3xl border-2 border-blue-600 px-4">Anwenden</button>
-		</div>
-	</form>
+			<div>
+				<button type="submit" class="h-12 rounded-3xl border-2 border-blue-600 px-4">Bilder generieren</button>
+			</div>
+		</form>
+	</section>
 
-	<Canvas {localeDate} />
+	<Canvas {localeDate} {selectedTemplate} />
 
 	<dialog bind:this={dialog}>
 		<header>
 			<button type="button" on:click={closeModal}>x</button>
 		</header>
-		<h1>Hello world</h1>
+
+		<h1>Bild{images.length > 1 ? 'er' : ''} speichern</h1>
+
+		<ul>
+			{#each images as item}
+				<li>
+					<a href={item.image} download={item.name} class="underline">{item.name}</a>
+				</li>
+			{/each}
+		</ul>
 	</dialog>
 
 	<!-- <Counter /> -->
 </main>
-
-<style>
-	dialog::backdrop {
-		--s: 222px; /* control the size */
-		--_g: #7f727b 10%, #d6b4c2 10.5% 19%, #0000 19.5% 80.5%, #d6b4c2 81% 89.5%, #baa0ab 90%;
-		--_c: from -90deg at 37.5% 50%, #0000 75%;
-		--_l1: linear-gradient(145deg, var(--_g));
-		--_l2: linear-gradient(35deg, var(--_g));
-		background: var(--_l1), var(--_l1) calc(var(--s) / 2) var(--s), var(--_l2), var(--_l2) calc(var(--s) / 2) var(--s),
-			conic-gradient(var(--_c), #7f727b 0) calc(var(--s) / 8) 0,
-			conic-gradient(var(--_c), #baa0ab 0) calc(var(--s) / 2) 0,
-			linear-gradient(90deg, #baa0ab 38%, #7f727b 0 50%, #baa0ab 0 62%, #7f727b 0);
-		background-size: var(--s) calc(2 * var(--s) / 3);
-	}
-</style>
