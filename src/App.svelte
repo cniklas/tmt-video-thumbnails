@@ -132,7 +132,7 @@
 		</form>
 	</section>
 
-	<Canvas {localeDate} {selectedTemplate} />
+	<Canvas {localeDate} {selectedTemplate} {isPainting} />
 
 	<dialog bind:this={dialog}>
 		<header>

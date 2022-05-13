@@ -9,6 +9,7 @@
 	--text-box-top: 360px;
 	--image-width: 1920px;
 	--image-height: 1080px;
+	--h2c-offset: 0; /* tbd */
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -55,4 +56,12 @@ dialog::backdrop {
 .image-dimensions {
 	width: var(--image-width);
 	height: var(--image-height);
+}
+
+.google-font {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+.h2c-offset {
+	transform: translateY(var(--h2c-offset));
 }
