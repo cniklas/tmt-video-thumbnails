@@ -124,8 +124,11 @@
 			<button
 				type="button"
 				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={e => closeModal(e, settingsEl)}>×</button
+				on:click={e => closeModal(e, settingsEl)}
 			>
+				<span class="sr-only">schließen</span>
+				<span class="close-icon" />
+			</button>
 		</header>
 
 		<form class="my-4 text-center" on:submit|preventDefault={onSubmit}>
@@ -163,18 +166,33 @@
 			<button
 				type="button"
 				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={e => closeModal(e, downloadsEl)}>×</button
+				on:click={e => closeModal(e, downloadsEl)}
 			>
+				<span class="sr-only">schließen</span>
+				<span class="close-icon" />
+			</button>
 		</header>
 
-		<ul class="my-4 list-disc pl-5 font-medium">
-			{#each images as item}
-				<li>
-					<a href={item.image} download={item.name} class="underline">{item.name}</a>
-				</li>
-			{/each}
-		</ul>
+		<div class="my-4">
+			<ul class="mb-8 list-disc pl-5 font-medium">
+				{#each images as item}
+					<li>
+						<a
+							href={item.image}
+							download={item.name}
+							class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+							>{item.name}</a
+						>
+					</li>
+				{/each}
+			</ul>
+			<div class="text-center">
+				<button
+					type="button"
+					class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+					on:click={e => closeModal(e, downloadsEl)}>schließen</button
+				>
+			</div>
+		</div>
 	</dialog>
-
-	<!-- <Counter /> -->
 </main>

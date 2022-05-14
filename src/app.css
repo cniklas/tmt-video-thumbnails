@@ -23,7 +23,7 @@ html {
 
 @media (min-width: 1920px) {
 	body {
-		overflow-x: hidden;
+		@apply overflow-x-hidden;
 	}
 }
 
@@ -59,6 +59,15 @@ dialog::backdrop {
 
 .dialog::backdrop {
 	background: none;
+}
+
+.close-icon {
+	@apply text-gray-800 bg-current relative rotate-45 w-0.5 h-3.5;
+
+	&::after {
+		@apply bg-current h-0.5 w-3.5 absolute top-1.5 -left-1.5;
+		content: "";
+	}
 }
 
 .image-dimensions {
