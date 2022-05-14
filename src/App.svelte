@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte'
 	import html2canvas from 'html2canvas'
 	import Canvas from './lib/Canvas.svelte'
 
@@ -6,6 +7,9 @@
 	import mockup from './assets/mockup.svg'
 	const imageTemplates = [{ name: 'mockup', source: mockup }]
 	let selectedTemplate
+
+	let settingsEl
+	let downloadsEl
 
 	const formatDate = (date = null, key = 'de-DE') => {
 		if (!date) return ''
@@ -19,7 +23,7 @@
 	let [dateInput] = new Date().toISOString().split('T')
 	let localeDate = formatDate(dateInput)
 
-	let finished = false
+	// let finished = false
 	let isPainting = false
 	let images = []
 	let languages = [
@@ -32,15 +36,14 @@
 	]
 
 	const resetPage = () => {
-		;[dateInput] = new Date().toISOString().split('T')
-		localeDate = formatDate(dateInput)
+		// ;[dateInput] = new Date().toISOString().split('T')
+		// localeDate = formatDate(dateInput)
 
-		finished = false
-		isPainting = false
+		// finished = false
 		images = []
-		languages.map(item => (item.checked = item.name === 'deutsch' ? true : false))
-		// https://svelte.dev/tutorial/updating-arrays-and-objects
-		languages = languages
+		// languages.map(item => (item.checked = item.name === 'deutsch' ? true : false))
+		// // https://svelte.dev/tutorial/updating-arrays-and-objects
+		// languages = languages
 
 		window.scroll(0, 0)
 	}
@@ -72,6 +75,8 @@
 	}
 
 	const onSubmit = async () => {
+		closeModal(null, settingsEl)
+
 		// run process
 		for (const language of languages) {
 			if (language.checked) {
@@ -81,33 +86,49 @@
 			}
 		}
 
-		finished = true
+		// finished = true
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		images = images
-		if (images.length) showModal()
+		if (images.length) showModal(null, downloadsEl)
 	}
 
-	let dialog
-	const showModal = () => {
-		dialog.showModal()
+	const showModal = (_, dialog = settingsEl) => {
 		// document.body.classList.add('freeze')
+		dialog.showModal()
 	}
-	const closeModal = () => {
+	const closeModal = (_, dialog = settingsEl) => {
 		dialog.close()
-		resetPage()
+		if (dialog === downloadsEl) resetPage()
 		// document.body.classList.remove('freeze')
 	}
-	// 🚩 TODO funktioniert browserübergreifend?
-	// 🚩 TODO <dialog> -Element-Tutorial weiterlesen
-	document.addEventListener('keydown', e => {
-		// if (e.code === 'Escape') document.body.classList.remove('freeze')
-		if (e.code === 'Escape' && dialog.getAttribute('open') !== null) resetPage()
+	onMount(() => {
+		downloadsEl.addEventListener('close', () => {
+			resetPage()
+		})
+
+		// // https://www.stefanjudis.com/blog/a-look-at-the-dialog-elements-super-powers/#how-to-close-the-modal-on-%60%3A%3Abackdrop%60-click
+		// dialog.addEventListener('click', event => {
+		// 	if (event.target.nodeName === 'DIALOG') {
+		// 		closeModal()
+		// 	}
+		// })
 	})
 </script>
 
 <main>
-	<section class="flex justify-center">
-		<form class="my-4 text-center accent-[#ff3e00]" on:submit|preventDefault={onSubmit}>
+	<Canvas {localeDate} {selectedTemplate} {isPainting} {showModal} />
+
+	<dialog class="dialog rounded-3xl p-6" bind:this={settingsEl}>
+		<header class="flex items-center justify-between">
+			<div class="text-2xl font-semibold">Einstellungen</div>
+			<button
+				type="button"
+				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				on:click={e => closeModal(e, settingsEl)}>×</button
+			>
+		</header>
+
+		<form class="my-4 text-center" on:submit|preventDefault={onSubmit}>
 			<div class="mb-4">
 				<select bind:value={selectedTemplate}>
 					{#each imageTemplates as item}
@@ -118,7 +139,7 @@
 			<div class="mb-4">
 				<input type="date" bind:value={dateInput} on:change={() => (localeDate = formatDate(dateInput))} />
 			</div>
-			<div class="mb-4 flex gap-2">
+			<div class="mb-8 flex gap-2">
 				{#each languages as item}
 					<label>
 						<input type="checkbox" bind:checked={item.checked} />
@@ -127,21 +148,26 @@
 				{/each}
 			</div>
 			<div>
-				<button type="submit" class="h-12 rounded-3xl border-2 border-blue-600 px-4">Bilder generieren</button>
+				<button
+					type="submit"
+					class="h-12 rounded-3xl bg-blue-700 px-12 text-lg font-medium uppercase tracking-wide text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+					>Bilder generieren</button
+				>
 			</div>
 		</form>
-	</section>
+	</dialog>
 
-	<Canvas {localeDate} {selectedTemplate} {isPainting} />
-
-	<dialog bind:this={dialog}>
-		<header>
-			<button type="button" on:click={closeModal}>x</button>
+	<dialog class="dialog rounded-3xl p-6" bind:this={downloadsEl}>
+		<header class="flex items-center justify-between">
+			<div class="text-2xl font-semibold">Downloads</div>
+			<button
+				type="button"
+				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				on:click={e => closeModal(e, downloadsEl)}>×</button
+			>
 		</header>
 
-		<h1>Bild{images.length > 1 ? 'er' : ''} speichern</h1>
-
-		<ul>
+		<ul class="my-4 list-disc pl-5 font-medium">
 			{#each images as item}
 				<li>
 					<a href={item.image} download={item.name} class="underline">{item.name}</a>
