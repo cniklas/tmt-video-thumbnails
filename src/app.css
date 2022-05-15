@@ -55,6 +55,15 @@ dialog::backdrop {
 	box-shadow: 0 0 60px hsl(0deg 0% 0% / 20%);
 	outline: 2px solid hsl(0deg 0% 100% / 10%);
 	outline-offset: -2px;
+
+	@supports not (backdrop-filter: blur()) {
+		background: linear-gradient(
+			113.11deg,
+			hsla(0, 0%, 96%, 0.96) 0.6%,
+			hsla(0, 0%, 96%, 0.98) 0.61%,
+			hsla(0, 0%, 96%, 0.92) 99.61%
+		);
+	}
 }
 
 .dialog::backdrop {
