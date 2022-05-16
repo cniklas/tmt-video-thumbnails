@@ -1,6 +1,6 @@
 import './app.css'
 import App from './App.svelte'
-import mockup from './assets/mockup.svg'
+import mockup from './assets/dummy.jpg'
 
 const imageTemplates = [{ name: 'mockup', source: mockup }]
 const languages = [
