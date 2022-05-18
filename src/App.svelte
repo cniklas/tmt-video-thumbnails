@@ -105,6 +105,7 @@
 		downloadsEl.addEventListener('close', () => {
 			resetPage()
 		})
+		// showModal(null, settingsEl)
 
 		// // https://www.stefanjudis.com/blog/a-look-at-the-dialog-elements-super-powers/#how-to-close-the-modal-on-%60%3A%3Abackdrop%60-click
 		// dialog.addEventListener('click', event => {
@@ -116,7 +117,7 @@
 </script>
 
 <main>
-	<Canvas {localeDate} {selectedTemplate} {isPainting} {showModal} />
+	<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={showModal} />
 
 	<dialog class="dialog rounded-3xl p-6" bind:this={settingsEl}>
 		<header class="flex items-center justify-between">
@@ -131,16 +132,24 @@
 			</button>
 		</header>
 
-		<form class="my-4 text-center" on:submit|preventDefault={onSubmit}>
+		<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
 			<div class="mb-4">
-				<select bind:value={selectedTemplate}>
+				<select
+					bind:value={selectedTemplate}
+					class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				>
 					{#each imageTemplates as item}
 						<option value={item}>{item.name}</option>
 					{/each}
 				</select>
 			</div>
 			<div class="mb-4">
-				<input type="date" bind:value={dateInput} on:change={() => (localeDate = formatDate(dateInput))} />
+				<input
+					type="date"
+					bind:value={dateInput}
+					class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+					on:change={() => (localeDate = formatDate(dateInput))}
+				/>
 			</div>
 			<div class="mb-8 flex gap-2">
 				{#each languages as item}
@@ -180,7 +189,7 @@
 						<a
 							href={item.image}
 							download={item.name}
-							class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+							class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
 							>{item.name}</a
 						>
 					</li>
@@ -189,7 +198,7 @@
 			<div class="text-center">
 				<button
 					type="button"
-					class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+					class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
 					on:click={e => closeModal(e, downloadsEl)}>schließen</button
 				>
 			</div>
