@@ -178,7 +178,7 @@
 		</header>
 
 		<div class="my-4">
-			<ul class="mb-8 list-disc pl-5 font-medium">
+			<ul class="mb-8 list-disc pl-5 font-medium space-y-1">
 				{#each images as item}
 					<li>
 						<a
