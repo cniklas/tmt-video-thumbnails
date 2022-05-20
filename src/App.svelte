@@ -32,7 +32,6 @@
 		{ key: 'es-ES', name: 'spanisch', checked: false },
 		{ key: 'fr-FR', name: 'französisch', checked: false },
 		{ key: 'ru-RU', name: 'russisch', checked: false },
-		// { key: 'pl-PL', name: 'polnisch', checked: false },
 	]
 
 	const resetPage = () => {
@@ -49,35 +48,30 @@
 	}
 
 	const generateImage = async (fileName = 'download') => {
-		if (!isPainting) {
-			isPainting = true
-			window.scroll(0, 0)
-
-			await new Promise(resolve => {
-				requestAnimationFrame(async () => {
-					try {
-						const canvas = await html2canvas(document.querySelector('#canvas'), {
-							backgroundColor: null,
-							useCORS: false,
-							logging: true,
-						})
-						const image = canvas.toDataURL('image/png')
-						images.push({ name: `${fileName}.png`, image })
-					} catch (error) {
-						console.error(error)
-					} finally {
-						isPainting = false
-						resolve()
-					}
-				})
+		await new Promise(resolve => {
+			requestAnimationFrame(async () => {
+				try {
+					const canvas = await html2canvas(document.querySelector('#canvas'), {
+						backgroundColor: null,
+						useCORS: false,
+						logging: true,
+					})
+					const image = canvas.toDataURL('image/png')
+					images.push({ name: `${fileName}.png`, image })
+				} catch (error) {
+					console.error(error)
+				} finally {
+					resolve()
+				}
 			})
-		}
+		})
 	}
 
 	const onSubmit = async () => {
 		closeModal(null, settingsEl)
 
 		// run process
+		isPainting = true
 		for (const language of languages) {
 			if (language.checked) {
 				localeDate = formatDate(dateInput, language.key)
@@ -86,6 +80,7 @@
 			}
 		}
 
+		isPainting = false
 		// finished = true
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		images = images
