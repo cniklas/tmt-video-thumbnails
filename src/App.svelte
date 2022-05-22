@@ -3,9 +3,8 @@
 	import html2canvas from 'html2canvas'
 	import Canvas from './lib/Canvas.svelte'
 
-	// templates
-	import mockup from './assets/mockup.svg'
-	const imageTemplates = [{ name: 'mockup', source: mockup }]
+	export let languages = []
+	export let imageTemplates = []
 	let selectedTemplate
 
 	let settingsEl
@@ -23,22 +22,13 @@
 	let [dateInput] = new Date().toISOString().split('T')
 	let localeDate = formatDate(dateInput)
 
-	// let finished = false
 	let isPainting = false
 	let images = []
-	let languages = [
-		{ key: 'de-DE', name: 'deutsch', checked: true },
-		{ key: 'en-US', name: 'englisch', checked: false },
-		{ key: 'es-ES', name: 'spanisch', checked: false },
-		{ key: 'fr-FR', name: 'französisch', checked: false },
-		{ key: 'ru-RU', name: 'russisch', checked: false },
-	]
 
 	const resetPage = () => {
 		// ;[dateInput] = new Date().toISOString().split('T')
 		// localeDate = formatDate(dateInput)
 
-		// finished = false
 		images = []
 		// languages.map(item => (item.checked = item.name === 'deutsch' ? true : false))
 		// // https://svelte.dev/tutorial/updating-arrays-and-objects
@@ -81,7 +71,6 @@
 		}
 
 		isPainting = false
-		// finished = true
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		images = images
 		if (images.length) showModal(null, downloadsEl)
