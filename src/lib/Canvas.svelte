@@ -8,7 +8,7 @@
 </script>
 
 <section id="canvas" class="image-dimensions relative mx-auto flex flex-col items-center">
-	<img src={selectedTemplate?.source} alt={selectedTemplate?.name} />
+	<img src={selectedTemplate?.source} alt={selectedTemplate?.name} width="1920" height="1080" />
 	<h1
 		class="google-font absolute top-[var(--text-box-top)] flex h-48 cursor-pointer items-center border-4 border-current px-8 text-[117px] font-semibold leading-none text-white"
 		on:click|stopPropagation={() => dispatch('clicked')}
