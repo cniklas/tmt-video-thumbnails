@@ -100,92 +100,90 @@
 	})
 </script>
 
-<main>
-	<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={showModal} />
+<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={showModal} />
 
-	<dialog class="dialog rounded-3xl p-6" bind:this={settingsEl}>
-		<header class="flex items-center justify-between">
-			<div class="text-2xl font-semibold">Einstellungen</div>
-			<button
-				type="button"
-				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={e => closeModal(e, settingsEl)}
+<dialog class="dialog rounded-3xl p-6" bind:this={settingsEl}>
+	<header class="flex items-center justify-between">
+		<div class="text-2xl font-semibold">Einstellungen</div>
+		<button
+			type="button"
+			class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+			on:click={e => closeModal(e, settingsEl)}
+		>
+			<span class="sr-only">schließen</span>
+			<span class="close-icon" />
+		</button>
+	</header>
+
+	<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
+		<div class="mb-4">
+			<select
+				bind:value={selectedTemplate}
+				class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
 			>
-				<span class="sr-only">schließen</span>
-				<span class="close-icon" />
-			</button>
-		</header>
-
-		<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
-			<div class="mb-4">
-				<select
-					bind:value={selectedTemplate}
-					class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				>
-					{#each imageTemplates as item}
-						<option value={item}>{item.name}</option>
-					{/each}
-				</select>
-			</div>
-			<div class="mb-4">
-				<input
-					type="date"
-					bind:value={dateInput}
-					class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-					on:change={() => (localeDate = formatDate(dateInput))}
-				/>
-			</div>
-			<div class="mb-8 flex gap-2">
-				{#each languages as item}
-					<label>
-						<input type="checkbox" bind:checked={item.checked} />
-						{item.name}
-					</label>
+				{#each imageTemplates as item}
+					<option value={item}>{item.name}</option>
 				{/each}
-			</div>
-			<div>
-				<button
-					type="submit"
-					class="h-12 rounded-3xl bg-blue-700 px-12 text-lg font-medium uppercase tracking-wide text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-					>Bilder generieren</button
-				>
-			</div>
-		</form>
-	</dialog>
-
-	<dialog class="dialog rounded-3xl p-6" bind:this={downloadsEl}>
-		<header class="flex items-center justify-between">
-			<div class="text-2xl font-semibold">Downloads</div>
-			<button
-				type="button"
-				class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={e => closeModal(e, downloadsEl)}
-			>
-				<span class="sr-only">schließen</span>
-				<span class="close-icon" />
-			</button>
-		</header>
-
-		<div class="my-4">
-			<ul class="mb-8 list-disc pl-5 font-medium space-y-1">
-				{#each images as item}
-					<li>
-						<a
-							href={item.image}
-							download={item.name}
-							class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-							>{item.name}</a
-						>
-					</li>
-				{/each}
-			</ul>
-			<div class="text-center">
-				<button
-					type="button"
-					class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-					on:click={e => closeModal(e, downloadsEl)}>schließen</button
-				>
-			</div>
+			</select>
 		</div>
-	</dialog>
-</main>
+		<div class="mb-4">
+			<input
+				type="date"
+				bind:value={dateInput}
+				class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				on:change={() => (localeDate = formatDate(dateInput))}
+			/>
+		</div>
+		<div class="mb-8 flex gap-2">
+			{#each languages as item}
+				<label>
+					<input type="checkbox" bind:checked={item.checked} />
+					{item.name}
+				</label>
+			{/each}
+		</div>
+		<div>
+			<button
+				type="submit"
+				class="h-12 rounded-3xl bg-blue-700 px-12 text-lg font-medium uppercase tracking-wide text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				>Bilder generieren</button
+			>
+		</div>
+	</form>
+</dialog>
+
+<dialog class="dialog rounded-3xl p-6" bind:this={downloadsEl}>
+	<header class="flex items-center justify-between">
+		<div class="text-2xl font-semibold">Downloads</div>
+		<button
+			type="button"
+			class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+			on:click={e => closeModal(e, downloadsEl)}
+		>
+			<span class="sr-only">schließen</span>
+			<span class="close-icon" />
+		</button>
+	</header>
+
+	<div class="my-4">
+		<ul class="mb-8 list-disc pl-5 font-medium space-y-1">
+			{#each images as item}
+				<li>
+					<a
+						href={item.image}
+						download={item.name}
+						class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+						>{item.name}</a
+					>
+				</li>
+			{/each}
+		</ul>
+		<div class="text-center">
+			<button
+				type="button"
+				class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				on:click={e => closeModal(e, downloadsEl)}>schließen</button
+			>
+		</div>
+	</div>
+</dialog>

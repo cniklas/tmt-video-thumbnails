@@ -1,4 +1,8 @@
-# Svelte + Vite
+# TMT Video Thumbnails
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3fefca7b-1ff6-459a-907f-93b700f3b7e9/deploy-status)](https://app.netlify.com/sites/tmt-video-thumbnails/deploys)
+
+---
 
 This template should help get you started developing with Svelte in Vite.
 
