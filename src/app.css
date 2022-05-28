@@ -6,10 +6,6 @@
 :root {
 	--scrollbar-thumb-color: hsl(218deg 13% 64%);
 	--scrollbar-track-color: hsl(218deg 76% 15% / 8%);
-	--text-box-top: 360px;
-	--image-width: 1920px;
-	--image-height: 1080px;
-	--h2c-offset: 0; /* tbd */
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -77,17 +73,4 @@ dialog::backdrop {
 		@apply bg-current h-0.5 w-3.5 absolute top-1.5 -left-1.5;
 		content: "";
 	}
-}
-
-.image-dimensions {
-	width: var(--image-width);
-	height: var(--image-height);
-}
-
-.google-font {
-	font-family: 'Source Sans Pro', sans-serif;
-}
-
-.h2c-offset {
-	transform: translateY(var(--h2c-offset));
 }

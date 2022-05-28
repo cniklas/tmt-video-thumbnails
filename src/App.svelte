@@ -41,7 +41,7 @@
 		await new Promise(resolve => {
 			requestAnimationFrame(async () => {
 				try {
-					const canvas = await html2canvas(document.querySelector('#canvas'), {
+					const canvas = await html2canvas(document.querySelector('#js-canvas'), {
 						backgroundColor: null,
 						useCORS: false,
 						logging: true,
