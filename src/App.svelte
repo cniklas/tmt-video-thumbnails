@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import html2canvas from 'html2canvas'
+	import Dialog from './lib/Dialog.svelte'
 	import Canvas from './lib/Canvas.svelte'
 
 	export let languages = []
@@ -58,7 +59,7 @@
 	}
 
 	const onSubmit = async () => {
-		closeModal(null, settingsEl)
+		closeModal(settingsEl)
 
 		// run process
 		isPainting = true
@@ -73,23 +74,23 @@
 		isPainting = false
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		images = images
-		if (images.length) showModal(null, downloadsEl)
+		if (images.length) showModal(downloadsEl)
 	}
 
-	const showModal = (_, dialog = settingsEl) => {
+	const showModal = (dialogEl) => {
 		// document.body.classList.add('freeze')
-		dialog.showModal()
+		dialogEl?.showModal()
 	}
-	const closeModal = (_, dialog = settingsEl) => {
-		dialog.close()
-		if (dialog === downloadsEl) resetPage()
+	const closeModal = (dialogEl) => {
+		dialogEl?.close()
+		if (dialogEl === downloadsEl) resetPage()
 		// document.body.classList.remove('freeze')
 	}
 	onMount(() => {
 		downloadsEl.addEventListener('close', () => {
 			resetPage()
 		})
-		// showModal(null, settingsEl)
+		// showModal(settingsEl)
 
 		// // https://www.stefanjudis.com/blog/a-look-at-the-dialog-elements-super-powers/#how-to-close-the-modal-on-%60%3A%3Abackdrop%60-click
 		// dialog.addEventListener('click', event => {
@@ -100,21 +101,9 @@
 	})
 </script>
 
-<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={showModal} />
+<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={() => showModal(settingsEl)} />
 
-<dialog class="dialog rounded-3xl p-6" bind:this={settingsEl}>
-	<header class="flex items-center justify-between">
-		<div class="text-2xl font-semibold">Einstellungen</div>
-		<button
-			type="button"
-			class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-			on:click={e => closeModal(e, settingsEl)}
-		>
-			<span class="sr-only">schließen</span>
-			<span class="close-icon" />
-		</button>
-	</header>
-
+<Dialog title="Einstellungen" bind:el={settingsEl} on:close="{() => closeModal(settingsEl)}">
 	<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
 		<div class="mb-4">
 			<select
@@ -150,21 +139,9 @@
 			>
 		</div>
 	</form>
-</dialog>
+</Dialog>
 
-<dialog class="dialog rounded-3xl p-6" bind:this={downloadsEl}>
-	<header class="flex items-center justify-between">
-		<div class="text-2xl font-semibold">Downloads</div>
-		<button
-			type="button"
-			class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-			on:click={e => closeModal(e, downloadsEl)}
-		>
-			<span class="sr-only">schließen</span>
-			<span class="close-icon" />
-		</button>
-	</header>
-
+<Dialog title="Downloads" bind:el={downloadsEl} on:close="{() => closeModal(downloadsEl)}">
 	<div class="my-4">
 		<ul class="mb-8 list-disc pl-5 font-medium space-y-1">
 			{#each images as item}
@@ -182,8 +159,8 @@
 			<button
 				type="button"
 				class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={e => closeModal(e, downloadsEl)}>schließen</button
+				on:click={() => closeModal(downloadsEl)}>schließen</button
 			>
 		</div>
 	</div>
-</dialog>
+</Dialog>
