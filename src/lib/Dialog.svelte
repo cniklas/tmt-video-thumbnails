@@ -2,8 +2,17 @@
 	import { createEventDispatcher } from 'svelte'
 	const dispatch = createEventDispatcher()
 
-	export let el
+	let el
 	export let title
+	export const open = () => {
+		// document.body.classList.add('freeze')
+		el.showModal()
+	}
+	export const close = () => {
+		el.close()
+		dispatch('closed')
+		// document.body.classList.remove('freeze')
+	}
 </script>
 
 <dialog class="dialog rounded-3xl p-6" bind:this={el}>
@@ -12,7 +21,7 @@
 		<button
 			type="button"
 			class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-			on:click={() => dispatch('close')}
+			on:click={close}
 		>
 			<span class="sr-only">schließen</span>
 			<span class="close-icon" />

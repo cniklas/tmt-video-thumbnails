@@ -1,5 +1,4 @@
 <script>
-	import { onMount } from 'svelte'
 	import html2canvas from 'html2canvas'
 	import Dialog from './lib/Dialog.svelte'
 	import Canvas from './lib/Canvas.svelte'
@@ -8,8 +7,8 @@
 	export let imageTemplates = []
 	let selectedTemplate
 
-	let settingsEl
-	let downloadsEl
+	let settingsDialog
+	let downloadsDialog
 
 	const formatDate = (date = null, key = 'de-DE') => {
 		if (!date) return ''
@@ -59,7 +58,7 @@
 	}
 
 	const onSubmit = async () => {
-		closeModal(settingsEl)
+		settingsDialog.close()
 
 		// run process
 		isPainting = true
@@ -74,36 +73,13 @@
 		isPainting = false
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		images = images
-		if (images.length) showModal(downloadsEl)
+		if (images.length) downloadsDialog.open()
 	}
-
-	const showModal = (dialogEl) => {
-		// document.body.classList.add('freeze')
-		dialogEl?.showModal()
-	}
-	const closeModal = (dialogEl) => {
-		dialogEl?.close()
-		if (dialogEl === downloadsEl) resetPage()
-		// document.body.classList.remove('freeze')
-	}
-	onMount(() => {
-		downloadsEl.addEventListener('close', () => {
-			resetPage()
-		})
-		// showModal(settingsEl)
-
-		// // https://www.stefanjudis.com/blog/a-look-at-the-dialog-elements-super-powers/#how-to-close-the-modal-on-%60%3A%3Abackdrop%60-click
-		// dialog.addEventListener('click', event => {
-		// 	if (event.target.nodeName === 'DIALOG') {
-		// 		closeModal()
-		// 	}
-		// })
-	})
 </script>
 
-<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={() => showModal(settingsEl)} />
+<Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={() => settingsDialog.open()} />
 
-<Dialog title="Einstellungen" bind:el={settingsEl} on:close="{() => closeModal(settingsEl)}">
+<Dialog bind:this={settingsDialog} title="Einstellungen">
 	<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
 		<div class="mb-4">
 			<select
@@ -141,9 +117,9 @@
 	</form>
 </Dialog>
 
-<Dialog title="Downloads" bind:el={downloadsEl} on:close="{() => closeModal(downloadsEl)}">
+<Dialog bind:this={downloadsDialog} title="Downloads" on:closed={() => resetPage()}>
 	<div class="my-4">
-		<ul class="mb-8 list-disc pl-5 font-medium space-y-1">
+		<ul class="mb-8 list-disc space-y-1 pl-5 font-medium">
 			{#each images as item}
 				<li>
 					<a
@@ -159,7 +135,7 @@
 			<button
 				type="button"
 				class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={() => closeModal(downloadsEl)}>schließen</button
+				on:click={() => downloadsDialog.close()}>schließen</button
 			>
 		</div>
 	</div>
