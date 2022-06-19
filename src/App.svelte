@@ -80,8 +80,8 @@
 <Canvas {localeDate} {selectedTemplate} {isPainting} on:clicked={() => settingsDialog.open()} />
 
 <Dialog bind:this={settingsDialog} title="Einstellungen">
-	<form class="my-4 text-center accent-blue-700" on:submit|preventDefault={onSubmit}>
-		<div class="mb-4">
+	<form class="accent-blue-700" on:submit|preventDefault={onSubmit}>
+		<div class="mb-4 text-center">
 			<select
 				bind:value={selectedTemplate}
 				class="rounded-lg border border-current px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
@@ -91,7 +91,7 @@
 				{/each}
 			</select>
 		</div>
-		<div class="mb-4">
+		<div class="mb-4 text-center">
 			<input
 				type="date"
 				bind:value={dateInput}
@@ -99,7 +99,7 @@
 				on:change={() => (localeDate = formatDate(dateInput))}
 			/>
 		</div>
-		<div class="mb-8 flex gap-2">
+		<div class="mx-auto mb-8 flex flex-col w-fit gap-2">
 			{#each languages as item}
 				<label>
 					<input type="checkbox" bind:checked={item.checked} />
@@ -107,10 +107,10 @@
 				</label>
 			{/each}
 		</div>
-		<div>
+		<div class="text-center">
 			<button
 				type="submit"
-				class="h-12 rounded-3xl bg-blue-700 px-12 text-lg font-medium uppercase tracking-wide text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+				class="h-12 rounded-md bg-blue-700 px-12 text-lg font-medium uppercase tracking-wide text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
 				>Bilder generieren</button
 			>
 		</div>
@@ -118,25 +118,23 @@
 </Dialog>
 
 <Dialog bind:this={downloadsDialog} title="Downloads" on:closed={() => resetPage()}>
-	<div class="my-4">
-		<ul class="mb-8 list-disc space-y-1 pl-5 font-medium">
-			{#each images as item}
-				<li>
-					<a
-						href={item.image}
-						download={item.name}
-						class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-						>{item.name}</a
-					>
-				</li>
-			{/each}
-		</ul>
-		<div class="text-center">
-			<button
-				type="button"
-				class="h-10 rounded-3xl border-2 border-current bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
-				on:click={() => downloadsDialog.close()}>schließen</button
-			>
-		</div>
-	</div>
+	<ul class="list-disc space-y-1 pl-5 font-medium">
+		{#each images as item}
+			<li>
+				<a
+					href={item.image}
+					download={item.name}
+					class="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+					>{item.name}</a
+				>
+			</li>
+		{/each}
+	</ul>
+	<!-- <div class="mt-8 text-center">
+		<button
+			type="button"
+			class="h-10 rounded-md bg-white px-10 text-lg font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-opacity-80 focus-visible:ring-offset-2"
+			on:click={() => downloadsDialog.close()}>schließen</button
+		>
+	</div> -->
 </Dialog>

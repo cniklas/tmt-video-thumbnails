@@ -15,8 +15,8 @@
 	}
 </script>
 
-<dialog class="dialog rounded-3xl p-6" bind:this={el}>
-	<header class="flex items-center justify-between">
+<dialog class="dialog rounded-xl p-6" bind:this={el}>
+	<header class="mb-6 flex items-center justify-between">
 		<div class="text-2xl font-semibold">{title}</div>
 		<button
 			type="button"
@@ -53,7 +53,9 @@
 			hsla(0, 0%, 100%, 0.8) 0.61%,
 			hsla(0, 0%, 100%, 0.2) 99.61%
 		);
-		box-shadow: 0 0 60px hsl(0deg 0% 0% / 20%);
+		box-shadow: 0px 2.8px 2.2px rgba(0, 0, 0, 0.02), 0px 6.7px 5.3px rgba(0, 0, 0, 0.028),
+			0px 12.5px 10px rgba(0, 0, 0, 0.035), 0px 22.3px 17.9px rgba(0, 0, 0, 0.042),
+			0px 41.8px 33.4px rgba(0, 0, 0, 0.05), 0px 100px 80px rgba(0, 0, 0, 0.07);
 		outline: 2px solid hsl(0deg 0% 100% / 10%);
 		outline-offset: -2px;
 
