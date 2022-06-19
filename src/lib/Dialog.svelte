@@ -10,12 +10,11 @@
 	}
 	export const close = () => {
 		el.close()
-		dispatch('closed')
 		// document.body.classList.remove('freeze')
 	}
 </script>
 
-<dialog class="dialog rounded-xl p-6" bind:this={el}>
+<dialog class="dialog rounded-xl p-6" bind:this={el} on:close={() => dispatch('closed')}>
 	<header class="mb-6 flex items-center justify-between">
 		<div class="text-2xl font-semibold">{title}</div>
 		<button
