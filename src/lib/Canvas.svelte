@@ -22,7 +22,7 @@
 <style>
 	:root {
 		--text-top: 360px; /* tbd */
-		--h2c-offset: 0; /* tbd */
+		--h2c-offset: -49px; /* tbd */
 	}
 
 	.canvas {
